@@ -1,0 +1,113 @@
+@import "./Variables.scss";
+
+#signup-page {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: $primary-background-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  #signup-title-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    width: 355px;
+  }
+
+  #signup-title-container > h2 {
+    font-size: 25px;
+    font-weight: 760;
+    color: white;
+  }
+
+  #form-inputs-container {
+    display: flex;
+    flex-direction: column;
+  }
+  #form-button-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+#signup-page > form {
+  display: flex;
+  flex-direction: row;
+}
+
+#form-inputs-container > input {
+  font-size: 18px;
+  width: 300px;
+  padding: 16px;
+  border: 0px;
+  border-radius: 7px;
+  margin: 15px;
+  color: white;
+  background-color: $primary-input-background-color;
+}
+
+#form-inputs-container > input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.95);
+  color: #e74c3c;
+}
+
+#form-button-container > button {
+  margin: 15px 0;
+  width: 50px;
+  height: 100%;
+  background: $primary-button-background-color;
+  border: none;
+  border-radius: 7px;
+  padding: 10px;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+#form-button-container > button:hover {
+  background-color: $primary-button-background-color-hover;
+}
+
+#signup-page > a {
+  font-size: 13px;
+  color: white;
+}
+
+#signup-page > a:hover {
+  color: $primary-button-background-color-hover;
+}
+
+@media screen and (max-width: $mobile) {
+  #signup-page {
+    #signup-title-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      align-items: center;
+      width: 250px;
+      position: relative;
+    }
+  }
+
+  #signup-page > form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #signup-page > form > #form-button-container {
+    padding: 16px;
+  }
+
+  #signup-page > form > #form-inputs-container > input {
+    max-width: 250px;
+  }
+
+  #signup-page > form > #form-button-container > button {
+    margin: 0;
+    width: 100%;
+  }
+}
