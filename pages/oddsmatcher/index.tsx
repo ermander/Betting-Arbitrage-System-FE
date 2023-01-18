@@ -1,10 +1,14 @@
-import MainLayout from "../../layout/MainLayout"
+import Layout from "../../layout"
 import type { NextPage } from "next"
 
 import style from "../../styles/Oddsmatcher.module.scss"
 
 const Oddsmatcher: NextPage = () => {
-  return <MainLayout />
+  return (
+    <Layout>
+      <></>
+    </Layout>
+  )
 }
 
 export default Oddsmatcher

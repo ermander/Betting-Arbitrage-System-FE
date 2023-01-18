@@ -1,50 +1,38 @@
 import type { NextPage } from "next"
-import Link from "next/link"
-import Image from "next/image"
-import { useState } from "react"
-import style from "../styles/Login.module.scss"
-
-// Images
-import lockImage from "../assets/images/lock.png"
-import rigthToBracketImage from "../assets/images/right-to-bracket-solid.svg"
+import styles from "../styles/Login.module.scss"
 
 const Login: NextPage = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-
-  function handleOnSubmit() {}
-
   return (
-    <div id={`${style["login-page"]}`}>
-      <div id={`${style["login-title-container"]}`}>
-        <h2>Login</h2>
+    <div className={styles.login}>
+      <div className={styles.left}>
+        <h1 className={styles.title}>Matched Betting</h1>
+        <h1 className={styles.title}>Managment System</h1>
       </div>
-      <form onSubmit={handleOnSubmit}>
-        <div id={`${style["form-inputs-container"]}`}>
+      <div className={styles.right}>
+        <h1 className={styles.title}>Login</h1>
+        <h2 className={styles.subtitle}>
+          Accedi al tuo account per usare il gestionale
+        </h2>
+        <div className={styles.form}>
+          <label className={styles.label}>Email</label>
           <input
+            className={styles.input}
             type="email"
-            name="email"
-            placeholder="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Inserisci la tua email..."
           />
+
+          <label className={styles.label}>Password</label>
           <input
+            className={styles.input}
             type="password"
-            name="password"
-            placeholder="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Inserisci la tua password..."
           />
-        </div>
-        <div id={`${style["form-button-container"]}`}>
-          <button type="submit">
-            <Image src={lockImage} />
+
+          <button className={styles.loginButton} type="submit">
+            Login
           </button>
         </div>
-      </form>
-      <Link href="/signup" id={`${style["signup-link"]}`}>
-        Non possiedi ancora un account? Registrati ora!
-      </Link>
+      </div>
     </div>
   )
 }
