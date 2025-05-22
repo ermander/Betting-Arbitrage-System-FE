@@ -1,9 +1,1 @@
-{
-  "/(authentication)/forgot-password/page": "app/(authentication)/forgot-password/page.js",
-  "/(authentication)/signin/page": "app/(authentication)/signin/page.js",
-  "/(authentication)/signup/page": "app/(authentication)/signup/page.js",
-  "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
-}
+{}
