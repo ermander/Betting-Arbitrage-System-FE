@@ -1,3 +1,5 @@
-export default function SignIn() {
-  return <div>SignIn</div>;
+import Login from './Login';
+
+export default function SignInPage() {
+  return <Login />;
 }
