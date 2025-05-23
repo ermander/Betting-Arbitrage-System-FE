@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Form, Input, Button } from 'antd';
 import styles from '../Auth.module.css';
+import Link from 'next/link';
 
 export default function Signup() {
   const router = useRouter();
@@ -33,6 +34,9 @@ export default function Signup() {
             </Button>
           </Form.Item>
         </Form>
+        <div className={styles.signupRow}>
+          Hai già un account? <Link href="/signin" className={styles.signupLink}>Accedi</Link>
+        </div>
       </div>
     </div>
   );

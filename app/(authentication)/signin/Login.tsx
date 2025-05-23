@@ -10,7 +10,7 @@ export default function Login() {
   const router = useRouter();
 
   const onFinish = () => {
-    router.push('/(dashboard)');
+    router.push('/dashboard');
   };
 
   return (
