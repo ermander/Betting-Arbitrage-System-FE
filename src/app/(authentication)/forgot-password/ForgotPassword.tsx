@@ -5,6 +5,7 @@ import { Form, Input, Button, Alert } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../Auth.module.css';
+import emailSendAnimation from "@/public/email-send-animation.gif";
 
 export default function ForgotPassword() {
   const onFinish = () => {
@@ -17,7 +18,7 @@ export default function ForgotPassword() {
         <h2 className={styles.welcome} style={{ marginBottom: 8, color: '#405189' }}>Password dimenticata?</h2>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
           <Image
-            src="/email-send-animation.gif"
+            src={emailSendAnimation}
             alt="Email send animation"
             width={120}
             height={120}
