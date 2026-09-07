@@ -19,7 +19,6 @@ const CRON_LABELS: Record<string, string> = {
   OdMatcherCalculation: 'Matcher (tick)',
   OdMatcherRebuild: 'Matcher (rebuild)',
   OdReconciliation: 'Riconciliazione',
-  OdMisplacedCompetitionsAudit: 'Audit competizioni',
   OdOpsMetricsSample: 'Campioni metriche',
 }
 
