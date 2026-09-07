@@ -206,6 +206,15 @@ export interface HealthAdapter {
   circuitPhase: 'open' | 'probing' | null
 }
 
+export interface HealthBrowser {
+  /** CDP_BROWSER_URL is set: the browser adapters may be scheduled. */
+  configured: boolean
+  endpoint: string | null
+  connected: boolean
+  browserVersion: string | null
+  pages: Array<{ slug: string; url: string; ageMinutes: number }>
+}
+
 export interface HealthProviderRun {
   runType: string
   status: string
@@ -230,6 +239,7 @@ export interface HealthReport {
   }
   alerts: HealthAlert[]
   adapters: HealthAdapter[]
+  browser: HealthBrowser
   runs: Array<{
     bookmakerSlug: string
     totalRuns: number

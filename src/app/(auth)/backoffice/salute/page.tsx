@@ -293,6 +293,43 @@ export default function BackofficeSalutePage() {
             </div>
           </Card>
 
+          {/* Browser sidecar (ADAPTER_STATUS §14.54) */}
+          <Card
+            title="Browser"
+            aside={report.browser.endpoint ?? 'nessun sidecar configurato'}
+          >
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex items-center gap-2">
+                <Dot tone={!report.browser.configured ? 'off' : report.browser.connected ? 'ok' : 'bad'} />
+                <span className="text-sm text-foreground">
+                  {!report.browser.configured
+                    ? 'Nessun sidecar Chromium: gli adapter browser non vengono schedulati'
+                    : report.browser.connected
+                      ? `Collegato · ${report.browser.browserVersion ?? 'versione ignota'}`
+                      : 'Non raggiungibile: gli adapter browser falliranno finché non torna su'}
+                </span>
+              </div>
+              {report.browser.configured && (
+                <span className="text-xs text-muted-foreground">
+                  {report.browser.pages.length === 0
+                    ? 'nessuna pagina aperta'
+                    : `${report.browser.pages.length} pagine aperte`}
+                </span>
+              )}
+            </div>
+            {report.browser.pages.length > 0 && (
+              <ul className="mt-3 space-y-1 text-xs">
+                {report.browser.pages.map((p) => (
+                  <li key={p.slug} className="flex flex-wrap items-baseline gap-2">
+                    <span className="font-mono text-foreground">{p.slug}</span>
+                    <span className="max-w-md truncate text-muted-foreground" title={p.url}>{p.url || '—'}</span>
+                    <span className="tabular-nums text-muted-foreground">aperta da {p.ageMinutes} min</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
           {/* Andamento (storia delle metriche) */}
           <TrendCharts />
 
