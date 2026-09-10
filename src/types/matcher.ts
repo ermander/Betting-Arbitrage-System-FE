@@ -16,6 +16,13 @@ export interface MatcherResult {
   eventId: string
   marketTypeKey: string
   line: number | null
+  /** The canonical market every leg prices; absent on rows from older backends. */
+  canonicalMarketId?: string | null
+  /** Handicap value for handicap markets (the line stays null there). */
+  handicap?: number | null
+  /** 'full_time' | 'first_half' | 'second_half' | …; absent on rows from older backends. */
+  periodScope?: string | null
+  teamScope?: string | null
   matchType: MatchType
   legs: MatcherLeg[]
   rating: number

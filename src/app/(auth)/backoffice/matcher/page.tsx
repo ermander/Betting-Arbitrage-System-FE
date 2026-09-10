@@ -99,7 +99,17 @@ function LegCell({ leg }: { leg: MatcherLeg }) {
   )
 }
 
-function marketLabel(key: string, line: number | null) {
+const PERIOD_LABELS: Record<string, string> = {
+  first_half: '1° tempo',
+  second_half: '2° tempo',
+  extra_time: 'suppl.',
+}
+
+function marketLabel(
+  key: string,
+  line: number | null,
+  scope?: { handicap?: number | null; periodScope?: string | null; teamScope?: string | null },
+) {
   const labels: Record<string, string> = {
     '1x2': '1X2',
     over_under: 'O/U',
@@ -109,8 +119,14 @@ function marketLabel(key: string, line: number | null) {
     handicap_european: 'Handicap EU',
     handicap_asian: 'Handicap AS',
   }
-  const base = labels[key] ?? key
-  return line != null ? `${base} ${line}` : base
+  let label = labels[key] ?? key
+  if (line != null) label += ` ${line}`
+  const handicap = scope?.handicap
+  if (handicap != null) label += ` ${handicap > 0 ? '+' : ''}${handicap}`
+  if (scope?.teamScope) label += ` ${scope.teamScope}`
+  const period = scope?.periodScope
+  if (period && period !== 'full_time') label += ` · ${PERIOD_LABELS[period] ?? period}`
+  return label
 }
 
 export default function MatcherPage() {
@@ -365,7 +381,7 @@ export default function MatcherPage() {
                   </td>
                   <td className="whitespace-nowrap px-3 py-2 text-xs">{formatDate(r.startTime)}</td>
                   <td className="whitespace-nowrap px-3 py-2">
-                    {marketLabel(r.marketTypeKey, r.line)}
+                    {marketLabel(r.marketTypeKey, r.line, r)}
                   </td>
                   {/* Leg 1 */}
                   <td className="px-3 py-2">
