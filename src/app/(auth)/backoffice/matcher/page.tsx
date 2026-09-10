@@ -3,6 +3,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from '@/components/ui/container'
 import { getMatcherResults, getMatcherMeta } from '@/services/api/matcher-client'
+import {
+  MatcherCompetitionFilter,
+  pruneCompetitionIds,
+} from '@/components/strumenti/matcher-competition-filter'
 import type {
   MatcherResult,
   MatcherMeta,
@@ -123,6 +127,7 @@ export default function MatcherPage() {
   const [marketTypeFilter, setMarketTypeFilter] = useState('')
   const [minRating, setMinRating] = useState('')
   const [bookmaker, setBookmaker] = useState('')
+  const [competitionIds, setCompetitionIds] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
@@ -141,10 +146,23 @@ export default function MatcherPage() {
     return () => clearTimeout(handle)
   }, [search])
 
+  const toggleCompetition = (id: string) => {
+    setCompetitionIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+    setPage(0)
+  }
+
   const loadMeta = useCallback(async () => {
     try {
       const m = await getMatcherMeta()
       setMeta(m)
+      // A selected competition that left the results (its rows purged) leaves the
+      // filter too: the dropdown could not show it any more.
+      if (m.competitions) {
+        const known = new Set(m.competitions.map((c) => c.id))
+        setCompetitionIds((prev) =>
+          prev.every((id) => known.has(id)) ? prev : prev.filter((id) => known.has(id)),
+        )
+      }
     } catch {
       /* ignore */
     }
@@ -164,6 +182,7 @@ export default function MatcherPage() {
       if (marketTypeFilter) filters.market_type = marketTypeFilter
       if (minRating) filters.min_rating = parseFloat(minRating)
       if (bookmaker) filters.bookmaker = bookmaker
+      if (competitionIds.length > 0) filters.competitions = competitionIds.join(',')
       if (debouncedSearch) filters.search = debouncedSearch
 
       const res = await getMatcherResults(filters)
@@ -174,7 +193,7 @@ export default function MatcherPage() {
       /* ignore */
     }
     setLoading(false)
-  }, [page, sport, matchType, marketTypeFilter, minRating, bookmaker, debouncedSearch])
+  }, [page, sport, matchType, marketTypeFilter, minRating, bookmaker, competitionIds, debouncedSearch])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- setState happens asynchronously after await, not synchronously
@@ -217,7 +236,13 @@ export default function MatcherPage() {
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"
           value={sport}
-          onChange={(e) => setFilter(setSport)(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            setFilter(setSport)(value)
+            setCompetitionIds((prev) =>
+              pruneCompetitionIds(prev, meta?.competitions, { sport: value }),
+            )
+          }}
         >
           <option value="">Tutti gli sport</option>
           {meta?.sports.map((s) => (
@@ -226,6 +251,14 @@ export default function MatcherPage() {
             </option>
           ))}
         </select>
+
+        <MatcherCompetitionFilter
+          className="col-span-2"
+          competitions={meta?.competitions}
+          scope={{ sport }}
+          selectedIds={competitionIds}
+          onToggle={toggleCompetition}
+        />
 
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"

@@ -2,6 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { getMatcherResults, getMatcherMeta } from '@/services/api/matcher-client'
+import {
+  MatcherCompetitionFilter,
+  pruneCompetitionIds,
+} from '@/components/strumenti/matcher-competition-filter'
 import type {
   MatcherResult,
   MatcherMeta,
@@ -178,6 +182,7 @@ export function OddsScannerV2Table() {
   const [marketTypeFilter, setMarketTypeFilter] = useState('')
   const [nation, setNation] = useState('')
   const [bookmaker, setBookmaker] = useState('')
+  const [competitionIds, setCompetitionIds] = useState<string[]>([])
   const [minRating, setMinRating] = useState('')
   const [maxRating, setMaxRating] = useState('')
   const [search, setSearch] = useState('')
@@ -193,6 +198,11 @@ export function OddsScannerV2Table() {
       setPage(0)
     }
 
+  const toggleCompetition = (id: string) => {
+    setCompetitionIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+    setPage(0)
+  }
+
   // Debounce the search input so we don't hammer the API on every keystroke.
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -206,6 +216,14 @@ export function OddsScannerV2Table() {
     try {
       const m = await getMatcherMeta()
       setMeta(m)
+      // A selected competition that left the results (its rows purged) leaves the
+      // filter too: the dropdown could not show it any more.
+      if (m.competitions) {
+        const known = new Set(m.competitions.map((c) => c.id))
+        setCompetitionIds((prev) =>
+          prev.every((id) => known.has(id)) ? prev : prev.filter((id) => known.has(id)),
+        )
+      }
     } catch {
       /* ignore: meta is non-critical */
     }
@@ -224,6 +242,7 @@ export function OddsScannerV2Table() {
       if (matchType) filters.match_type = matchType as MatchType
       if (marketTypeFilter) filters.market_type = marketTypeFilter
       if (nation) filters.nation = nation
+      if (competitionIds.length > 0) filters.competitions = competitionIds.join(',')
       if (bookmaker) filters.bookmaker = bookmaker
       if (minRating) filters.min_rating = parseFloat(minRating)
       if (maxRating) filters.max_rating = parseFloat(maxRating)
@@ -245,6 +264,7 @@ export function OddsScannerV2Table() {
     matchType,
     marketTypeFilter,
     nation,
+    competitionIds,
     bookmaker,
     minRating,
     maxRating,
@@ -312,7 +332,13 @@ export function OddsScannerV2Table() {
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"
           value={sport}
-          onChange={(e) => setFilter(setSport)(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            setFilter(setSport)(value)
+            setCompetitionIds((prev) =>
+              pruneCompetitionIds(prev, meta?.competitions, { sport: value, nation }),
+            )
+          }}
         >
           <option value="">Tutti gli sport</option>
           {meta?.sports.map((s) => (
@@ -325,7 +351,13 @@ export function OddsScannerV2Table() {
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"
           value={nation}
-          onChange={(e) => setFilter(setNation)(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            setFilter(setNation)(value)
+            setCompetitionIds((prev) =>
+              pruneCompetitionIds(prev, meta?.competitions, { sport, nation: value }),
+            )
+          }}
         >
           <option value="">Tutte le nazioni</option>
           {meta?.nations?.map((n) => (
@@ -334,6 +366,14 @@ export function OddsScannerV2Table() {
             </option>
           ))}
         </select>
+
+        <MatcherCompetitionFilter
+          className="col-span-2"
+          competitions={meta?.competitions}
+          scope={{ sport, nation }}
+          selectedIds={competitionIds}
+          onToggle={toggleCompetition}
+        />
 
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"

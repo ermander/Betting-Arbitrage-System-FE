@@ -23,6 +23,8 @@ export interface MatcherResult {
   awayName: string | null
   startTime: string
   sportName: string
+  /** od_competitions.id; null on rows written before migration 0004, absent on older backends. */
+  competitionId?: string | null
   competitionName: string
   nationName: string | null
   nationCode: string | null
@@ -36,6 +38,17 @@ export interface MatcherResultsResponse {
   calculatedAt: string | null
 }
 
+/** One competition present in the current matcher rows (GET /matcher/meta). */
+export interface MatcherCompetition {
+  id: string
+  name: string
+  nationName: string | null
+  nationCode: string | null
+  sportName: string
+  /** Matcher rows of this competition when meta was built. */
+  results: number
+}
+
 export interface MatcherMeta {
   totalResults: number
   calculatedAt: string | null
@@ -43,6 +56,8 @@ export interface MatcherMeta {
   bookmakers: Array<{ slug: string; name: string }>
   marketTypes: string[]
   nations: string[]
+  /** Absent on backends older than migration 0004. */
+  competitions?: MatcherCompetition[]
 }
 
 export interface MatcherFilters {
@@ -53,6 +68,8 @@ export interface MatcherFilters {
   max_rating?: number
   bookmaker?: string
   nation?: string
+  /** Comma-separated od_competitions ids; any of them. */
+  competitions?: string
   search?: string
   sort_by?: 'rating' | 'start_time'
   sort_dir?: 'ASC' | 'DESC'
