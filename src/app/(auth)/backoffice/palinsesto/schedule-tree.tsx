@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { getCountryFlagUrl, getCountryFlagUrlFromIso } from '@/lib/country-flags'
 import type {
-  CompetitionScrapeSelection,
   ProviderScheduleTreeCategoryDto,
   ProviderScheduleTreeDto,
   ProviderScheduleTreeSportDto,
@@ -25,8 +24,6 @@ export function ScheduleTree({
   scope,
   onScopeChange,
   autoExpand,
-  onScrapeChange,
-  scrapeBusy,
 }: {
   tree: ProviderScheduleTreeDto | null
   loading: boolean
@@ -35,10 +32,6 @@ export function ScheduleTree({
   onScopeChange: (scope: ScheduleScope | null) => void
   /** True while a text search is active: every branch is opened so matches are visible. */
   autoExpand: boolean
-  /** Switches the scrape flag (§14.86); the parent reloads the tree afterwards. */
-  onScrapeChange: (selection: CompetitionScrapeSelection) => void
-  /** True while a switch is in flight: every switch is disabled. */
-  scrapeBusy: boolean
 }) {
   // Open/closed is derived: a node is open by default (sports always, countries
   // only when the sport has few) until the user toggles it, and the user's
@@ -63,7 +56,7 @@ export function ScheduleTree({
   const totalLabel = useMemo(
     () =>
       tree
-        ? `${num(tree.totalFixtures)} partite · ${num(tree.scrapeEnabledCompetitions)} / ${num(tree.totalCompetitions)} competizioni lette`
+        ? `${num(tree.totalFixtures)} partite · ${num(tree.scrapeEnabledCompetitions)} / ${num(tree.totalCompetitions)} competizioni lette dagli scraper`
         : '',
     [tree],
   )
@@ -102,24 +95,15 @@ export function ScheduleTree({
           <ul className="space-y-1">
             {tree.sports.map((s) => (
               <li key={s.sportId}>
-                <div className="flex items-center gap-1 rounded-md pr-2">
-                  <button
-                    type="button"
-                    onClick={() => toggle(s.sportId, true)}
-                    className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-semibold text-foreground hover:bg-accent"
-                  >
-                    <Caret open={isSportOpen(s)} />
-                    <span className="flex-1">{s.name}</span>
-                    <Count n={s.fixtureCount} />
-                  </button>
-                  <ScrapeBulk
-                    enabled={s.scrapeEnabledCount}
-                    total={s.competitionCount}
-                    what={`tutte le competizioni di ${s.name}`}
-                    disabled={scrapeBusy}
-                    onChange={(enabled) => onScrapeChange({ enabled, sportIds: [s.sportId] })}
-                  />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => toggle(s.sportId, true)}
+                  className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-semibold text-foreground hover:bg-accent"
+                >
+                  <Caret open={isSportOpen(s)} />
+                  <span className="flex-1">{s.name}</span>
+                  <Count n={s.fixtureCount} />
+                </button>
                 {isSportOpen(s) && (
                   <ul className="ml-3 space-y-0.5 border-l border-border pl-2">
                     {s.categories.map((c) => {
@@ -156,15 +140,6 @@ export function ScheduleTree({
                               <span className="flex-1 truncate">{c.name}</span>
                               <Count n={c.fixtureCount} />
                             </button>
-                            <ScrapeBulk
-                              enabled={c.scrapeEnabledCount}
-                              total={c.competitions.length}
-                              what={`tutte le competizioni di ${c.name}`}
-                              disabled={scrapeBusy}
-                              onChange={(enabled) =>
-                                onScrapeChange({ enabled, categoryIds: [c.categoryId] })
-                              }
-                            />
                           </div>
                           {open && (
                             <ul className="ml-4 space-y-0.5 border-l border-border pl-2">
@@ -173,51 +148,37 @@ export function ScheduleTree({
                                   scope?.type === 'competition' && scope.id === comp.competitionId
                                 return (
                                   <li key={comp.competitionId}>
-                                    <div
-                                      className={`flex items-center gap-1 rounded-md pr-2 ${
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        onScopeChange(
+                                          sel
+                                            ? null
+                                            : {
+                                                type: 'competition',
+                                                id: comp.competitionId,
+                                                label: comp.name,
+                                              },
+                                        )
+                                      }
+                                      className={`flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover:bg-accent ${
                                         sel ? 'bg-primary/15 text-primary' : 'text-foreground'
                                       } ${comp.scrapeEnabled ? '' : 'opacity-60'}`}
+                                      title={
+                                        comp.apisportsLeagueId !== null
+                                          ? `league id api-sports ${comp.apisportsLeagueId}`
+                                          : undefined
+                                      }
                                     >
-                                      <ScrapeSwitch
-                                        checked={comp.scrapeEnabled}
-                                        name={comp.name}
-                                        disabled={scrapeBusy}
-                                        onChange={(enabled) =>
-                                          onScrapeChange({
-                                            enabled,
-                                            competitionIds: [comp.competitionId],
-                                          })
-                                        }
-                                      />
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          onScopeChange(
-                                            sel
-                                              ? null
-                                              : {
-                                                  type: 'competition',
-                                                  id: comp.competitionId,
-                                                  label: comp.name,
-                                                },
-                                          )
-                                        }
-                                        className="flex min-w-0 flex-1 items-center gap-2 rounded-md py-1 text-left text-sm hover:bg-accent"
-                                        title={
-                                          comp.apisportsLeagueId !== null
-                                            ? `league id api-sports ${comp.apisportsLeagueId}`
-                                            : undefined
-                                        }
-                                      >
-                                        <span className="flex-1 truncate">{comp.name}</span>
-                                        {comp.apisportsLeagueId !== null && (
-                                          <span className="font-mono text-[10px] text-muted-foreground">
-                                            #{comp.apisportsLeagueId}
-                                          </span>
-                                        )}
-                                        <Count n={comp.fixtureCount} />
-                                      </button>
-                                    </div>
+                                      <ScrapeDot enabled={comp.scrapeEnabled} />
+                                      <span className="flex-1 truncate">{comp.name}</span>
+                                      {comp.apisportsLeagueId !== null && (
+                                        <span className="font-mono text-[10px] text-muted-foreground">
+                                          #{comp.apisportsLeagueId}
+                                        </span>
+                                      )}
+                                      <Count n={comp.fixtureCount} />
+                                    </button>
                                   </li>
                                 )
                               })}
@@ -251,89 +212,23 @@ function Caret({ open }: { open: boolean }) {
 }
 
 /**
- * The switch of one competition (§14.86). A plain button styled as a switch:
- * it sits inside a row that also carries the scope button, so it must not be
- * nested in it.
+ * Read-only: whether the scrapers read this competition (§14.86). The
+ * selection is made on the page «Competizioni da leggere» (§14.87), which
+ * lists the whole catalog; this tree only navigates the fixtures of a window.
  */
-function ScrapeSwitch({
-  checked,
-  name,
-  disabled,
-  onChange,
-}: {
-  checked: boolean
-  name: string
-  disabled: boolean
-  onChange: (enabled: boolean) => void
-}) {
+function ScrapeDot({ enabled }: { enabled: boolean }) {
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={`${checked ? 'Smetti di leggere' : 'Leggi'} le quote di ${name}`}
+    <span
+      className={`inline-block h-2 w-2 shrink-0 rounded-full ${
+        enabled ? 'bg-emerald-500' : 'bg-muted-foreground/40'
+      }`}
       title={
-        checked
-          ? 'Gli scraper leggono le quote di questa competizione: clicca per fermarli'
-          : 'Gli scraper non leggono questa competizione: clicca per riprendere'
+        enabled
+          ? 'Gli scraper leggono le quote di questa competizione'
+          : 'Competizione spenta: gli scraper non la leggono (Competizioni da leggere)'
       }
-      disabled={disabled}
-      onClick={(e) => {
-        e.stopPropagation()
-        onChange(!checked)
-      }}
-      className={`relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 ${
-        checked ? 'bg-emerald-500' : 'bg-muted-foreground/40'
-      }`}
-    >
-      <span
-        className={`inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ${
-          checked ? 'translate-x-3.5' : 'translate-x-0.5'
-        }`}
-      />
-    </button>
-  )
-}
-
-/**
- * The bulk action of a country or a sport: «n / total» read, click to switch
- * them all off when every one is on, on otherwise. It applies to the whole
- * catalog (every competition of that node), not only to the window shown.
- */
-function ScrapeBulk({
-  enabled,
-  total,
-  what,
-  disabled,
-  onChange,
-}: {
-  enabled: number
-  total: number
-  what: string
-  disabled: boolean
-  onChange: (enabled: boolean) => void
-}) {
-  const allOn = total > 0 && enabled === total
-  const next = !allOn
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      title={`${next ? 'Leggi' : 'Smetti di leggere'} ${what} (anche quelle fuori dalla finestra scelta)`}
-      onClick={(e) => {
-        e.stopPropagation()
-        onChange(next)
-      }}
-      className={`shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-[10px] font-normal tabular-nums transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 ${
-        allOn
-          ? 'border-emerald-500/40 text-emerald-500'
-          : enabled === 0
-            ? 'border-border text-muted-foreground'
-            : 'border-amber-500/40 text-amber-500'
-      }`}
-    >
-      {num(enabled)}/{num(total)}
-    </button>
+      aria-label={enabled ? 'letta dagli scraper' : 'spenta'}
+    />
   )
 }
 

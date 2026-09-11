@@ -125,6 +125,48 @@ export interface ProviderScheduleTreeDto {
   sports: ProviderScheduleTreeSportDto[]
 }
 
+/** One competition of the catalog behind «Competizioni da leggere» (§14.87). */
+export interface CompetitionCatalogCompetitionDto {
+  competitionId: string
+  name: string
+  apisportsLeagueId: number | null
+  scrapeEnabled: boolean
+  /** Fixtures from now on, whatever the window of the schedule page. */
+  futureFixtures: number
+  nextKickoff: string | null
+  /** Distinct bookmakers with a non-rejected mapping on a future fixture. */
+  bookmakersMapped: number
+}
+
+export interface CompetitionCatalogCategoryDto {
+  categoryId: string
+  name: string
+  countryCode: string | null
+  competitionCount: number
+  scrapeEnabledCount: number
+  futureFixtures: number
+  competitions: CompetitionCatalogCompetitionDto[]
+}
+
+export interface CompetitionCatalogSportDto {
+  sportId: string
+  name: string
+  slug: string
+  sportKey: string | null
+  competitionCount: number
+  scrapeEnabledCount: number
+  futureFixtures: number
+  categories: CompetitionCatalogCategoryDto[]
+}
+
+export interface CompetitionCatalogDto {
+  now: string
+  totalCompetitions: number
+  scrapeEnabledCompetitions: number
+  competitionsWithFutureFixtures: number
+  sports: CompetitionCatalogSportDto[]
+}
+
 /**
  * Which competitions to switch (PATCH /competitions/scrape, §14.86). The
  * selectors are a union and apply to the whole catalog, not only to the
@@ -224,6 +266,14 @@ export async function getProviderScheduleTree(
   const { data } = await apiClient.get<ProviderScheduleTreeDto>(
     '/backoffice/provider-schedule/tree',
     { params: toParams(query) },
+  )
+  return data
+}
+
+/** The whole catalog with the scrape flag, no time window (§14.87). */
+export async function getCompetitionCatalog(): Promise<CompetitionCatalogDto> {
+  const { data } = await apiClient.get<CompetitionCatalogDto>(
+    '/backoffice/provider-schedule/competitions',
   )
   return data
 }

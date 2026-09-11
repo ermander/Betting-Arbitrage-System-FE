@@ -100,6 +100,7 @@ export const authSidebarNav: AuthSidebarNavItem[] = [
       { label: 'Matchings', href: '/backoffice/matchings' },
       { label: 'Matcher', href: '/backoffice/matcher' },
       { label: 'Palinsesto API-Football', href: '/backoffice/palinsesto' },
+      { label: 'Competizioni da leggere', href: '/backoffice/competizioni' },
       { label: 'Eventi SR', href: '/backoffice/eventi-sportradar' },
       { label: 'Utenti', href: '/backoffice/users' },
     ],
