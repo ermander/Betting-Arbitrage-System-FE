@@ -115,21 +115,15 @@ export default function BetDetailPage() {
 
   const hasLegsInCorso = useMemo(() => legs.some((l) => l.statoEvento === 'in_corso'), [legs])
 
+  // Una giocata è una multipla solo se è stata salvata come tale: i modali delle multiple
+  // (offline e oddsmatcher) scrivono 'Multipla' in competizione e mercato della punta, ed è
+  // lo stesso marcatore che usa il backend. Niente euristiche sulla forma delle gambe: una
+  // singola con gambe clonate non deve mai far ricalcolare le coperture.
   const isMultipla = useMemo(() => {
     const puntaLeg = legs.find((l) => l.metodo === 'punta')
     if (puntaLeg == null) return false
-    // Hedge legs = tutto tranne la prima punta (include sia banca che punta-punta)
-    const hedgeLegs = legs.filter((l) => l.id !== puntaLeg.id)
-    if (hedgeLegs.length < 2) return false
-    // Bancate/coperture parziali (stesso evento/mercato/selezione) non sono una multipla
-    const first = hedgeLegs[0]
-    const isPartialLay = hedgeLegs.every(
-      (l) =>
-        l.eventoNome === first.eventoNome &&
-        l.mercato === first.mercato &&
-        l.selezione === first.selezione,
-    )
-    return !isPartialLay
+    const marker = (s: string | null | undefined) => (s ?? '').trim().toLowerCase() === 'multipla'
+    return marker(puntaLeg.competizione) || marker(puntaLeg.mercato)
   }, [legs])
 
   const resolveAccountLabel = useCallback(
@@ -330,17 +324,8 @@ export default function BetDetailPage() {
               return String(a.id).localeCompare(String(b.id))
             })
         : []
-      const isMultipla =
-        hedgeLegs.length >= 2 &&
-        puntaLeg != null &&
-        !hedgeLegs.every(
-          (l) =>
-            l.eventoNome === hedgeLegs[0].eventoNome &&
-            l.mercato === hedgeLegs[0].mercato &&
-            l.selezione === hedgeLegs[0].selezione,
-        )
 
-      if (isMultipla) {
+      if (isMultipla && puntaLeg != null && hedgeLegs.length > 0) {
         const field = editingCell.field
         const editedIsHedge = leg.id !== puntaLeg.id
         const needsRecalc =
@@ -491,16 +476,7 @@ export default function BetDetailPage() {
               return String(a.id).localeCompare(String(b.id))
             })
         : []
-      const isMultipla =
-        hedgeLegs.length >= 2 &&
-        puntaLeg != null &&
-        !hedgeLegs.every(
-          (l) =>
-            l.eventoNome === hedgeLegs[0].eventoNome &&
-            l.mercato === hedgeLegs[0].mercato &&
-            l.selezione === hedgeLegs[0].selezione,
-        )
-      if (isMultipla && legId === puntaLeg.id) {
+      if (isMultipla && puntaLeg != null && hedgeLegs.length > 0 && legId === puntaLeg.id) {
         const leg = legs.find((l) => l.id === legId)
         const oldBonus = leg?.bonusValore ?? 0
         const newBonus = tipoBonus !== 'bonus' ? 0 : oldBonus
