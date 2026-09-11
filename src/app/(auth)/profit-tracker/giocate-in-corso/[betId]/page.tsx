@@ -252,6 +252,7 @@ export default function BetDetailPage() {
       eventoNome: leg.eventoNome,
       competizione: leg.competizione,
       mercato: leg.mercato,
+      selezione: leg.selezione,
       metodo: leg.metodo,
       tipoBonus: leg.tipoBonus,
       accountId: leg.accountId,
@@ -265,6 +266,8 @@ export default function BetDetailPage() {
       movimento: leg.movimento,
       statoEvento: 'bozza',
       tag: null,
+      // Stessa posizione dell'originale: il clone resta accanto alla gamba clonata
+      posizione: leg.posizione,
     }
     try {
       await addBetLegs(betId, [payload])
