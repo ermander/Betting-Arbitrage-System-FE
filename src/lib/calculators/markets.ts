@@ -38,6 +38,7 @@ export type MarketType =
   | 'TOTAL_SHOTS_ON_TARGET'
   | 'TEAM_TOTAL_SHOTS_ON_TARGET'
   | 'SHOTS_ON_TARGET_1X2'
+  | 'SHOTS_1X2'
   | 'TOTAL_FOULS'
   | 'TEAM_FOULS'
   | 'TOTAL_CARDS'
@@ -48,6 +49,8 @@ export type MarketType =
   | 'FIRST_HALF_CORNERS'
   | 'SECOND_HALF_CORNERS'
   | 'TEAM_CORNERS'
+  | 'TEAM_FIRST_HALF_CORNERS'
+  | 'TEAM_SECOND_HALF_CORNERS'
   | 'CORNERS_1X2'
 
 export type MarketOutcome =
@@ -193,6 +196,13 @@ const MARKET_CONFIGS: MarketConfig[] = [
     sport: 'calcio',
     outcomes: OUTCOMES_1X2,
   },
+  {
+    kind: 'outcomes',
+    marketType: 'SHOTS_1X2',
+    baseLabel: 'TIRI 1X2',
+    sport: 'calcio',
+    outcomes: OUTCOMES_1X2,
+  },
   // ── Falli ──
   {
     kind: 'over_under',
@@ -278,6 +288,24 @@ const MARKET_CONFIGS: MarketConfig[] = [
     sport: 'calcio',
     minLine: 0.5,
     maxLine: 10.5,
+    teamScoped: true,
+  },
+  {
+    kind: 'over_under',
+    marketType: 'TEAM_FIRST_HALF_CORNERS',
+    baseLabel: 'CORNER SQUADRA 1° TEMPO',
+    sport: 'calcio',
+    minLine: 0.5,
+    maxLine: 5.5,
+    teamScoped: true,
+  },
+  {
+    kind: 'over_under',
+    marketType: 'TEAM_SECOND_HALF_CORNERS',
+    baseLabel: 'CORNER SQUADRA 2° TEMPO',
+    sport: 'calcio',
+    minLine: 0.5,
+    maxLine: 5.5,
     teamScoped: true,
   },
   {
