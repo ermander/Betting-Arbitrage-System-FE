@@ -253,6 +253,9 @@ export interface HealthReport {
   matcher: {
     rows: number
     calculatedAt: string | null
+    /** Canonical markets waiting for the incremental recompute (backends from §14.77). */
+    pendingMarkets?: number
+    /** Older backends: events waiting; same counter under the old name. */
     pendingEvents: number
     rebuild: HealthCron | null
     tick: HealthCron | null

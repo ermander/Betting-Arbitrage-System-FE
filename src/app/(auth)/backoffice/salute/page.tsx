@@ -374,7 +374,10 @@ export default function BackofficeSalutePage() {
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <Stat label="Righe nel matcher" value={num(report.matcher.rows)} />
                 <Stat label="Ultimo calcolo" value={ago(report.matcher.calculatedAt, now)} hint={formatDateTime(report.matcher.calculatedAt)} />
-                <Stat label="Eventi in coda incrementale" value={num(report.matcher.pendingEvents)} />
+                <Stat
+                  label="Mercati in coda incrementale"
+                  value={num(report.matcher.pendingMarkets ?? report.matcher.pendingEvents)}
+                />
                 <Stat
                   label="Rebuild completo"
                   value={ago(report.matcher.rebuild?.lastSuccessAt ?? null, now)}
