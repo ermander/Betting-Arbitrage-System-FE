@@ -815,7 +815,11 @@ export const useProfitTrackerStore = create<ProfitTrackerState>((set, _get) => {
         accountMovementsError: undefined,
       }))
       const state = _get()
-      const account = state.accounts.find((a) => a.id === movement.accountId)
+      // `accounts` è la pagina corrente della sezione Conti; `allAccounts` l'elenco completo
+      // usato da dettaglio giocata e modali. Il conto può stare in uno solo dei due.
+      const account =
+        state.accounts.find((a) => a.id === movement.accountId) ??
+        state.allAccounts.find((a) => a.id === movement.accountId)
       if (!account) {
         set((s) => ({
           ...s,

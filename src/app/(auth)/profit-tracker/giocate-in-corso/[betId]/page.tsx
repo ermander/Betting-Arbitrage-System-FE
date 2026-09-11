@@ -1381,7 +1381,11 @@ export default function BetDetailPage() {
         </div>
       )}
 
-      <AccountMovementModal open={depositModalOpen} onOpenChange={setDepositModalOpen} />
+      <AccountMovementModal
+        open={depositModalOpen}
+        onOpenChange={setDepositModalOpen}
+        defaultAccountId={bet?.accountId}
+      />
     </section>
   )
 }

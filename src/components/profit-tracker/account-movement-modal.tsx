@@ -27,9 +27,19 @@ interface AccountMovementModalProps {
    * `allAccounts`, che è limitato lato backend e potrebbe non contenere conti a saldo basso.
    */
   account?: Account
+  /**
+   * Conto preselezionato quando la modale è aperta senza conto bloccato (es. dal dettaglio
+   * giocata: il conto della giocata). L'utente può comunque sceglierne un altro.
+   */
+  defaultAccountId?: string
 }
 
-export function AccountMovementModal({ open, onOpenChange, account }: AccountMovementModalProps) {
+export function AccountMovementModal({
+  open,
+  onOpenChange,
+  account,
+  defaultAccountId,
+}: AccountMovementModalProps) {
   const allAccounts = useProfitTrackerStore((s) => s.allAccounts)
   const fetchAllAccounts = useProfitTrackerStore((s) => s.fetchAllAccounts)
   const wallets = useProfitTrackerStore((s) => s.wallets)
@@ -53,11 +63,14 @@ export function AccountMovementModal({ open, onOpenChange, account }: AccountMov
     void fetchWallets()
   }, [open, account, fetchAllAccounts, fetchWallets])
 
+  const hasAccount = (id: string | undefined) => !!id && allAccounts.some((a) => a.id === id)
   const effectiveAccountId = account
     ? account.id
-    : accountId && allAccounts.some((a) => a.id === accountId)
+    : hasAccount(accountId)
       ? accountId
-      : (allAccounts[0]?.id ?? '')
+      : hasAccount(defaultAccountId)
+        ? (defaultAccountId as string)
+        : (allAccounts[0]?.id ?? '')
 
   const selectedAccount = useMemo(
     () => account ?? allAccounts.find((a) => a.id === effectiveAccountId),
@@ -88,6 +101,10 @@ export function AccountMovementModal({ open, onOpenChange, account }: AccountMov
       dataRegistrazione: new Date(dataRegistrazione).toISOString(),
       descrizione: descrizione || undefined,
     })
+
+    // Lo store non lancia: segnala l'errore nello stato. Se c'è, la modale resta aperta
+    // e lo mostra, invece di chiudersi come se il movimento fosse stato salvato.
+    if (useProfitTrackerStore.getState().accountMovementsError) return
 
     setValore('')
     setDescrizione('')
