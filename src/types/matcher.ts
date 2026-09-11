@@ -67,35 +67,6 @@ export interface MatcherMeta {
   competitions?: MatcherCompetition[]
 }
 
-/** A bookmaker the oddsmatcher can be centred on (GET /oddsmatcher/bookmakers). */
-export interface OddsmatcherBookmaker {
-  slug: string
-  name: string
-  isExchange: boolean
-}
-
-/** Filters of the on-demand oddsmatcher: the store's ones plus the two bookmakers. */
-export interface OddsmatcherFilters extends Omit<MatcherFilters, 'bookmaker' | 'max_rating'> {
-  /** The bookmaker every combination must include. */
-  bookmaker: string
-  /** The only counterpart; absent = every other bookmaker. */
-  against?: string
-}
-
-export interface OddsmatcherResultsResponse {
-  bookmaker: OddsmatcherBookmaker | null
-  against: string | null
-  results: MatcherResult[]
-  total: number
-  calculatedAt: string
-  pricesRead: number
-  computedMs: number
-  limit: number
-  offset: number
-  /** Set when more combinations exist than the backend keeps pageable: narrow the filters. */
-  truncatedAt: number | null
-}
-
 export interface MatcherFilters {
   sport?: string
   match_type?: MatchType

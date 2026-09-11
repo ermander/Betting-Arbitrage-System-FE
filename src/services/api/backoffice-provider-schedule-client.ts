@@ -40,6 +40,8 @@ export interface ProviderScheduleSportSummaryDto {
   sportSlug: string
   sportKey: string | null
   competitions: number
+  /** Of those, the ones the bookmakers are read for (§14.86). */
+  competitionsScrapeEnabled: number
   competitionsWithFutureFixtures: number
   fixturesTotal: number
   fixturesFuture: number
@@ -91,6 +93,8 @@ export interface ProviderScheduleTreeCompetitionDto {
   name: string
   apisportsLeagueId: number | null
   fixtureCount: number
+  /** Whether the bookmakers are read for this competition (§14.86). */
+  scrapeEnabled: boolean
 }
 
 export interface ProviderScheduleTreeCategoryDto {
@@ -98,6 +102,7 @@ export interface ProviderScheduleTreeCategoryDto {
   name: string
   countryCode: string | null
   fixtureCount: number
+  scrapeEnabledCount: number
   competitions: ProviderScheduleTreeCompetitionDto[]
 }
 
@@ -107,13 +112,37 @@ export interface ProviderScheduleTreeSportDto {
   slug: string
   sportKey: string | null
   fixtureCount: number
+  scrapeEnabledCount: number
+  competitionCount: number
   categories: ProviderScheduleTreeCategoryDto[]
 }
 
 export interface ProviderScheduleTreeDto {
   filters: ProviderScheduleFiltersDto
   totalFixtures: number
+  totalCompetitions: number
+  scrapeEnabledCompetitions: number
   sports: ProviderScheduleTreeSportDto[]
+}
+
+/**
+ * Which competitions to switch (PATCH /competitions/scrape, §14.86). The
+ * selectors are a union and apply to the whole catalog, not only to the
+ * competitions in the page's window.
+ */
+export interface CompetitionScrapeSelection {
+  enabled: boolean
+  competitionIds?: string[]
+  categoryIds?: string[]
+  sportIds?: string[]
+}
+
+export interface CompetitionScrapeResultDto {
+  enabled: boolean
+  /** Rows whose flag actually changed. */
+  updated: number
+  scrapeEnabledTotal: number
+  competitionsTotal: number
 }
 
 export interface ProviderFixtureDto {
@@ -195,6 +224,16 @@ export async function getProviderScheduleTree(
   const { data } = await apiClient.get<ProviderScheduleTreeDto>(
     '/backoffice/provider-schedule/tree',
     { params: toParams(query) },
+  )
+  return data
+}
+
+export async function setCompetitionsScrape(
+  selection: CompetitionScrapeSelection,
+): Promise<CompetitionScrapeResultDto> {
+  const { data } = await apiClient.patch<CompetitionScrapeResultDto>(
+    '/backoffice/provider-schedule/competitions/scrape',
+    selection,
   )
   return data
 }

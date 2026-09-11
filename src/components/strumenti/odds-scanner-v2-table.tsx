@@ -1,12 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import {
-  getMatcherResults,
-  getMatcherMeta,
-  getOddsmatcherResults,
-  getOddsmatcherBookmakers,
-} from '@/services/api/matcher-client'
+import { getMatcherResults, getMatcherMeta } from '@/services/api/matcher-client'
 import {
   MatcherCompetitionFilter,
   pruneCompetitionIds,
@@ -15,20 +10,13 @@ import type {
   MatcherResult,
   MatcherMeta,
   MatcherFilters,
-  OddsmatcherBookmaker,
   MatchType,
   MatcherLeg,
 } from '@/types/matcher'
 
 const PAGE_SIZE = 50
-// Two views on the same prices: the surebet store (every combination above the
-// threshold, all bookmakers against all) and the oddsmatcher, computed on request
-// around one bookmaker (§14.79).
-type ScannerMode = 'surebet' | 'oddsmatcher'
-const MODES: Array<{ id: ScannerMode; label: string; hint: string }> = [
-  { id: 'surebet', label: 'Surebet', hint: 'Tutti i bookmaker contro tutti, dal 97% in su' },
-  { id: 'oddsmatcher', label: 'Oddsmatcher', hint: 'Un bookmaker contro uno o contro tutti, calcolato al momento' },
-]
+// One view: the store of every combination from the 80% floor up, all bookmakers
+// against all, recomputed by the backend when prices change (§14.77, §14.86).
 // Fase 2: results follow ingestion by seconds on the backend, so the page polls
 // every 20 s (first page, visible tab only) instead of once a minute.
 const AUTO_REFRESH_MS = 20_000
@@ -212,12 +200,6 @@ export function OddsScannerV2Table() {
   const [marketTypeFilter, setMarketTypeFilter] = useState('')
   const [nation, setNation] = useState('')
   const [bookmaker, setBookmaker] = useState('')
-  const [mode, setMode] = useState<ScannerMode>('surebet')
-  const [omBook, setOmBook] = useState('')
-  const [omAgainst, setOmAgainst] = useState('')
-  const [omBookmakers, setOmBookmakers] = useState<OddsmatcherBookmaker[]>([])
-  const [computedMs, setComputedMs] = useState<number | null>(null)
-  const [truncatedAt, setTruncatedAt] = useState<number | null>(null)
   const [competitionIds, setCompetitionIds] = useState<string[]>([])
   const [minRating, setMinRating] = useState('')
   const [maxRating, setMaxRating] = useState('')
@@ -265,24 +247,7 @@ export function OddsScannerV2Table() {
     }
   }, [])
 
-  const loadBookmakers = useCallback(async () => {
-    try {
-      setOmBookmakers(await getOddsmatcherBookmakers())
-    } catch {
-      /* ignore: the list is non-critical */
-    }
-  }, [])
-
   const loadResults = useCallback(async () => {
-    if (mode === 'oddsmatcher' && !omBook) {
-      setResults([])
-      setTotal(0)
-      setCalculatedAt(null)
-      setComputedMs(null)
-      setTruncatedAt(null)
-      setLoading(false)
-      return
-    }
     setLoading(true)
     try {
       const filters: MatcherFilters = {
@@ -295,45 +260,24 @@ export function OddsScannerV2Table() {
       if (matchType) filters.match_type = matchType as MatchType
       if (marketTypeFilter) filters.market_type = marketTypeFilter
       if (nation) filters.nation = nation
+      if (bookmaker) filters.bookmaker = bookmaker
       if (competitionIds.length > 0) filters.competitions = competitionIds.join(',')
       if (minRating) filters.min_rating = parseFloat(minRating)
+      if (maxRating) filters.max_rating = parseFloat(maxRating)
       if (debouncedSearch) filters.search = debouncedSearch
       if (startFrom) filters.start_time_from = new Date(startFrom).toISOString()
       if (startTo) filters.start_time_to = new Date(startTo).toISOString()
 
-      if (mode === 'oddsmatcher') {
-        const { bookmaker: _unused, max_rating: _unusedMax, ...rest } = filters
-        void _unused
-        void _unusedMax
-        const res = await getOddsmatcherResults({
-          ...rest,
-          bookmaker: omBook,
-          against: omAgainst || undefined,
-        })
-        setResults(res.results)
-        setTotal(res.total)
-        setCalculatedAt(res.calculatedAt)
-        setComputedMs(res.computedMs)
-        setTruncatedAt(res.truncatedAt ?? null)
-      } else {
-        if (bookmaker) filters.bookmaker = bookmaker
-        if (maxRating) filters.max_rating = parseFloat(maxRating)
-        const res = await getMatcherResults(filters)
-        setResults(res.results)
-        setTotal(res.total)
-        setCalculatedAt(res.calculatedAt)
-        setComputedMs(null)
-        setTruncatedAt(null)
-      }
+      const res = await getMatcherResults(filters)
+      setResults(res.results)
+      setTotal(res.total)
+      setCalculatedAt(res.calculatedAt)
     } catch {
       /* ignore */
     }
     setLoading(false)
   }, [
     page,
-    mode,
-    omBook,
-    omAgainst,
     sport,
     matchType,
     marketTypeFilter,
@@ -350,8 +294,7 @@ export function OddsScannerV2Table() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadMeta()
-    void loadBookmakers()
-  }, [loadMeta, loadBookmakers])
+  }, [loadMeta])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -388,38 +331,6 @@ export function OddsScannerV2Table() {
             </>
           )}
         </div>
-      </div>
-
-      {/* Mode */}
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        {MODES.map((m) => (
-          <button
-            key={m.id}
-            type="button"
-            title={m.hint}
-            onClick={() => {
-              setMode(m.id)
-              setPage(0)
-            }}
-            className={`rounded-md border px-3 py-1.5 text-sm font-medium transition-colors ${
-              mode === m.id
-                ? 'border-primary/30 bg-primary/15 text-primary'
-                : 'border-border text-muted-foreground hover:bg-accent hover:text-foreground'
-            }`}
-          >
-            {m.label}
-          </button>
-        ))}
-        <span className="text-xs text-muted-foreground">
-          {MODES.find((m) => m.id === mode)?.hint}
-          {mode === 'oddsmatcher' && computedMs != null ? ` · calcolato in ${computedMs} ms` : ''}
-        </span>
-        {mode === 'oddsmatcher' && truncatedAt != null && (
-          <span className="rounded-md border border-neon-orange/30 bg-neon-orange/10 px-2 py-0.5 text-xs text-neon-orange">
-            {total.toLocaleString('it-IT')} combinazioni, sfogliabili le migliori{' '}
-            {truncatedAt.toLocaleString('it-IT')}: restringi i filtri per vedere le altre
-          </span>
-        )}
       </div>
 
       {/* Filters */}
@@ -495,58 +406,18 @@ export function OddsScannerV2Table() {
           ))}
         </select>
 
-        {mode === 'surebet' ? (
-          <select
-            className="rounded-md border bg-background px-3 py-2 text-sm"
-            value={bookmaker}
-            onChange={(e) => setFilter(setBookmaker)(e.target.value)}
-          >
-            <option value="">Tutti i bookmaker</option>
-            {meta?.bookmakers.map((b) => (
-              <option key={b.slug} value={b.slug}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <>
-            <select
-              className="rounded-md border border-primary/40 bg-background px-3 py-2 text-sm"
-              value={omBook}
-              onChange={(e) => {
-                const value = e.target.value
-                setFilter(setOmBook)(value)
-                if (value && value === omAgainst) setOmAgainst('')
-              }}
-              aria-label="Bookmaker"
-            >
-              <option value="">Scegli il bookmaker…</option>
-              {omBookmakers.map((b) => (
-                <option key={b.slug} value={b.slug}>
-                  {b.name}
-                  {b.isExchange ? ' (exchange)' : ''}
-                </option>
-              ))}
-            </select>
-            <select
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-              value={omAgainst}
-              onChange={(e) => setFilter(setOmAgainst)(e.target.value)}
-              aria-label="Contro"
-              disabled={!omBook}
-            >
-              <option value="">Contro tutti gli altri</option>
-              {omBookmakers
-                .filter((b) => b.slug !== omBook)
-                .map((b) => (
-                  <option key={b.slug} value={b.slug}>
-                    contro {b.name}
-                    {b.isExchange ? ' (exchange)' : ''}
-                  </option>
-                ))}
-            </select>
-          </>
-        )}
+        <select
+          className="rounded-md border bg-background px-3 py-2 text-sm"
+          value={bookmaker}
+          onChange={(e) => setFilter(setBookmaker)(e.target.value)}
+        >
+          <option value="">Tutti i bookmaker</option>
+          {meta?.bookmakers.map((b) => (
+            <option key={b.slug} value={b.slug}>
+              {b.name}
+            </option>
+          ))}
+        </select>
 
         <input
           type="text"
@@ -616,9 +487,7 @@ export function OddsScannerV2Table() {
             ) : results.length === 0 ? (
               <tr>
                 <td colSpan={8} className="px-3 py-8 text-center text-muted-foreground">
-                  {mode === 'oddsmatcher' && !omBook
-                    ? 'Scegli un bookmaker: le sue combinazioni vengono calcolate al momento'
-                    : 'Nessun risultato'}
+                  Nessun risultato
                 </td>
               </tr>
             ) : (

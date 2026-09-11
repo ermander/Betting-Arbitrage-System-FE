@@ -107,6 +107,13 @@ export function ScheduleSummary({
                 {num(s.competitionsWithFutureFixtures)}
                 <span className="text-muted-foreground"> / {num(s.competitions)}</span>
               </dd>
+              <dt className="text-muted-foreground" title="Competizioni per cui gli scraper leggono le quote dei bookmaker">
+                Lette dagli scraper
+              </dt>
+              <dd className="text-right text-foreground">
+                {num(s.competitionsScrapeEnabled)}
+                <span className="text-muted-foreground"> / {num(s.competitions)}</span>
+              </dd>
               <dt className="text-muted-foreground">Dal · al</dt>
               <dd className="text-right text-foreground">
                 {formatDate(s.firstStartTime)} · {formatDate(s.lastStartTime)}

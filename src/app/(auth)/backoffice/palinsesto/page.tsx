@@ -12,6 +12,8 @@ import {
   getProviderFixtures,
   getProviderScheduleSummary,
   getProviderScheduleTree,
+  setCompetitionsScrape,
+  type CompetitionScrapeSelection,
   type OdEventStatus,
   type ProviderFixtureListDto,
   type ProviderScheduleQuery,
@@ -181,18 +183,22 @@ export default function PalinsestoPage() {
   const baseKey = useMemo(() => JSON.stringify(baseQuery), [baseQuery])
 
   // --- tree ---
+  // The tree is re-read after every switch of the scrape flag (§14.86): the
+  // tick is part of its key, so the previous tree stays on screen meanwhile.
+  const [treeTick, setTreeTick] = useState(0)
+  const treeKey = `${baseKey}:${treeTick}`
   const [treeResult, setTreeResult] = useState<Keyed<ProviderScheduleTreeDto> | null>(null)
 
   useEffect(() => {
     let cancelled = false
     getProviderScheduleTree(baseQuery)
       .then((data) => {
-        if (!cancelled) setTreeResult({ key: baseKey, data, error: null })
+        if (!cancelled) setTreeResult({ key: treeKey, data, error: null })
       })
       .catch((err) => {
         if (!cancelled)
           setTreeResult({
-            key: baseKey,
+            key: treeKey,
             data: null,
             error: extractMessage(err, 'Errore nel caricamento della navigazione.'),
           })
@@ -200,9 +206,9 @@ export default function PalinsestoPage() {
     return () => {
       cancelled = true
     }
-  }, [baseQuery, baseKey])
+  }, [baseQuery, treeKey])
 
-  const treeLoading = treeResult?.key !== baseKey
+  const treeLoading = treeResult?.key !== treeKey
   // The previous tree stays on screen while the next one loads.
   const tree = treeResult?.data ?? null
 
@@ -265,7 +271,34 @@ export default function PalinsestoPage() {
   const handleRefresh = () => {
     setAnchor(Date.now())
     setNow(Date.now())
+    setTreeTick((t) => t + 1)
     loadSummary()
+  }
+
+  // --- scrape flag (§14.86) ---
+  const [scrapeBusy, setScrapeBusy] = useState(false)
+  const [scrapeNotice, setScrapeNotice] = useState<{ text: string; error: boolean } | null>(null)
+
+  const handleScrapeChange = async (selection: CompetitionScrapeSelection) => {
+    setScrapeBusy(true)
+    try {
+      const result = await setCompetitionsScrape(selection)
+      setScrapeNotice({
+        text: `${result.updated === 1 ? '1 competizione' : `${result.updated} competizioni`} ${
+          result.enabled ? 'accese' : 'spente'
+        } · ora gli scraper leggono ${result.scrapeEnabledTotal} competizioni su ${result.competitionsTotal}`,
+        error: false,
+      })
+      setTreeTick((t) => t + 1)
+      loadSummary()
+    } catch (err) {
+      setScrapeNotice({
+        text: extractMessage(err, 'Errore nel cambio della selezione delle competizioni.'),
+        error: true,
+      })
+    } finally {
+      setScrapeBusy(false)
+    }
   }
 
   const handleSportChange = (value: string) => {
@@ -285,7 +318,9 @@ export default function PalinsestoPage() {
           </h2>
           <p className="text-sm text-muted-foreground">
             Tutte le partite scaricate da api-sports.io così come stanno nel catalogo canonico, con i
-            bookmaker che il matcher ha collegato a ciascuna.
+            bookmaker che il matcher ha collegato a ciascuna. Gli interruttori nell&apos;albero dicono
+            agli scraper quali competizioni leggere: il catalogo resta completo, cambia solo dove
+            vanno a prendere le quote.
           </p>
         </div>
         <Button size="sm" variant="outline" onClick={handleRefresh}>
@@ -396,6 +431,22 @@ export default function PalinsestoPage() {
             />
           </div>
         </div>
+        {scrapeNotice && (
+          <div
+            className={`mt-2 flex items-center gap-2 text-xs ${
+              scrapeNotice.error ? 'text-destructive' : 'text-muted-foreground'
+            }`}
+          >
+            <span>{scrapeNotice.text}</span>
+            <button
+              type="button"
+              className="underline hover:text-foreground"
+              onClick={() => setScrapeNotice(null)}
+            >
+              ok
+            </button>
+          </div>
+        )}
         {effectiveScope && (
           <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
             Filtro attivo:
@@ -424,6 +475,8 @@ export default function PalinsestoPage() {
             scope={effectiveScope}
             onScopeChange={setScope}
             autoExpand={effectiveQ !== undefined}
+            onScrapeChange={(selection) => void handleScrapeChange(selection)}
+            scrapeBusy={scrapeBusy}
           />
         </div>
         <div className="min-w-0 flex-1">
