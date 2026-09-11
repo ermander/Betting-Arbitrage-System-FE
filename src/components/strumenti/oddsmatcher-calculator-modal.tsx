@@ -438,7 +438,7 @@ export function OddsmatcherCalculatorModal({
 
   const handleSendToProfitTracker = async () => {
     if (!row || !accountIdPunta || !accountIdBanca) {
-      setHolderModalError("Seleziona sia l'intestatario punta sia l'intestatario banca.")
+      setHolderModalError("Seleziona sia il collaboratore punta sia il collaboratore banca.")
       return
     }
     if (
@@ -1069,7 +1069,7 @@ export function OddsmatcherCalculatorModal({
         </div>
       </DialogContent>
 
-      {/* Sub-modale: Assegna intestatari punta e banca */}
+      {/* Sub-modale: Assegna collaboratori punta e banca */}
       <Dialog
         open={holderModalOpen}
         onOpenChange={(open) => {
@@ -1126,10 +1126,10 @@ export function OddsmatcherCalculatorModal({
             <>
               <div className="px-6 pb-1 pt-6">
                 <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
-                  Assegna intestatari
+                  Assegna collaboratori
                 </DialogTitle>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                  Scegli l&apos;intestatario per la puntata (book) e per la bancata (exchange).
+                  Scegli il collaboratore per la puntata (book) e per la bancata (exchange).
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Potrai aggiungere altre puntate o bancate dalla pagina dettaglio della giocata.
@@ -1141,7 +1141,7 @@ export function OddsmatcherCalculatorModal({
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                      Intestatario Punta
+                      Collaboratore Punta
                     </Label>
                     <span className="rounded-md bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
                       {bookNamePunta || '—'}
@@ -1154,8 +1154,8 @@ export function OddsmatcherCalculatorModal({
                     })}
                     value={accountIdPunta}
                     onChange={setAccountIdPunta}
-                    placeholder="Seleziona intestatario"
-                    searchPlaceholder="Cerca intestatario..."
+                    placeholder="Seleziona collaboratore"
+                    searchPlaceholder="Cerca collaboratore..."
                     allowEmpty={false}
                     portalContainer={holderPortalEl}
                   />
@@ -1170,7 +1170,7 @@ export function OddsmatcherCalculatorModal({
                 <div className="space-y-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs font-medium uppercase tracking-wide text-destructive">
-                      Intestatario Banca
+                      Collaboratore Banca
                     </Label>
                     <span className="rounded-md bg-destructive/15 px-2 py-0.5 text-xs font-medium text-destructive">
                       {bookNameBanca || '—'}
@@ -1183,8 +1183,8 @@ export function OddsmatcherCalculatorModal({
                     })}
                     value={accountIdBanca}
                     onChange={setAccountIdBanca}
-                    placeholder="Seleziona intestatario"
-                    searchPlaceholder="Cerca intestatario..."
+                    placeholder="Seleziona collaboratore"
+                    searchPlaceholder="Cerca collaboratore..."
                     allowEmpty={false}
                     portalContainer={holderPortalEl}
                   />

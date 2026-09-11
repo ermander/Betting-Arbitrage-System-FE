@@ -13,8 +13,8 @@ import { WalletCreateModal } from '@/components/profit-tracker/wallet-create-mod
 
 const PAGE_SIZE = 20
 
-export { IntestatariPage as IntestatariContent }
-export default function IntestatariPage() {
+export { CollaboratoriPage as CollaboratoriContent }
+export default function CollaboratoriPage() {
   const holders = useProfitTrackerStore((s) => s.holders)
   const holdersTotal = useProfitTrackerStore((s) => s.holdersTotal) ?? 0
   const isLoadingHolders = useProfitTrackerStore((s) => s.isLoadingHolders)
@@ -61,11 +61,11 @@ export default function IntestatariPage() {
 
   return (
     <ProfitTrackerPageShell
-      sectionTitle="Intestatari"
-      sectionDescription="Gestisci gli intestatari collegati a conti e wallet."
+      sectionTitle="Collaboratori"
+      sectionDescription="Gestisci i collaboratori collegati a conti e wallet."
       actions={
         <Button type="button" onClick={() => setCreateOpen(true)} className="w-full sm:w-auto">
-          Nuovo intestatario
+          Nuovo collaboratore
         </Button>
       }
     >
@@ -127,7 +127,7 @@ export default function IntestatariPage() {
       <div className="block space-y-4 sm:hidden">
         {isLoadingHolders && (
           <div className="rounded-xl border border-border bg-card/70 p-6 text-center text-sm text-muted-foreground shadow-sm">
-            Caricamento intestatari in corso...
+            Caricamento collaboratori in corso...
           </div>
         )}
         {!isLoadingHolders &&
@@ -187,7 +187,7 @@ export default function IntestatariPage() {
           ))}
         {!isLoadingHolders && holders.length === 0 && (
           <div className="rounded-xl border border-border bg-card/70 p-6 text-center text-sm text-muted-foreground shadow-sm">
-            Nessun intestatario registrato. Usa &quot;Nuovo intestatario&quot; per aggiungerne uno.
+            Nessun collaboratore registrato. Usa &quot;Nuovo collaboratore&quot; per aggiungerne uno.
           </div>
         )}
         {holdersError && !isLoadingHolders && (
@@ -212,7 +212,7 @@ export default function IntestatariPage() {
             {isLoadingHolders && (
               <tr>
                 <td className="px-3 py-6 text-center text-xs text-muted-foreground" colSpan={4}>
-                  Caricamento intestatari in corso...
+                  Caricamento collaboratori in corso...
                 </td>
               </tr>
             )}
@@ -267,7 +267,7 @@ export default function IntestatariPage() {
             {!isLoadingHolders && holders.length === 0 && (
               <tr>
                 <td className="px-3 py-6 text-center text-xs text-muted-foreground" colSpan={4}>
-                  Nessun intestatario registrato. Usa &quot;Nuovo intestatario&quot; per aggiungerne
+                  Nessun collaboratore registrato. Usa &quot;Nuovo collaboratore&quot; per aggiungerne
                   uno.
                 </td>
               </tr>
@@ -287,7 +287,7 @@ export default function IntestatariPage() {
       {holdersTotal > PAGE_SIZE && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/70 px-3 py-2 shadow-sm">
           <p className="text-xs text-muted-foreground">
-            Pagina {page} di {totalPages} &middot; {holdersTotal} intestatari in totale
+            Pagina {page} di {totalPages} &middot; {holdersTotal} collaboratori in totale
           </p>
           <div className="flex gap-2">
             <Button

@@ -86,7 +86,7 @@ export function WalletEditModal({ open, onOpenChange, wallet }: WalletEditModalP
           <>
             <div className="space-y-4 p-4 pt-0 text-sm">
               <div className="space-y-1.5">
-                <Label htmlFor="wallet-edit-holder">Intestatario</Label>
+                <Label htmlFor="wallet-edit-holder">Collaboratore</Label>
                 <Input
                   id="wallet-edit-holder"
                   value={holderName}

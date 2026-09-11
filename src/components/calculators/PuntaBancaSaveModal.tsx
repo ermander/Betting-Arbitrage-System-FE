@@ -162,7 +162,7 @@ export function PuntaBancaSaveModal({
           }
         }
 
-        // Carica gli account exchange per filtrare gli intestatari banca
+        // Carica gli account exchange per filtrare i collaboratori banca
         try {
           const allAccounts = await getAccounts({ status: 'abilitato' })
           const exchangeBookIds = new Set(currentBooks.filter((b) => b.isExchange).map((b) => b.id))
@@ -173,7 +173,7 @@ export function PuntaBancaSaveModal({
           )
           setExchangeHolderIds(holderIdsWithExchange)
         } catch {
-          // Se fallisce, non filtrare (fallback a tutti gli intestatari)
+          // Se fallisce, non filtrare (fallback a tutti i collaboratori)
         }
       } finally {
         setIsLoadingBasics(false)
@@ -233,7 +233,7 @@ export function PuntaBancaSaveModal({
     [loadAccountsForHolder],
   )
 
-  // Conti punta (non-exchange) di tutti gli intestatari, per la modalità "moltiplica su N conti"
+  // Conti punta (non-exchange) di tutti i collaboratori, per la modalità "moltiplica su N conti"
   const puntaAccountOptions = useMemo(() => {
     if (!isMultiConto) return []
     return allAccountsList
@@ -501,7 +501,7 @@ export function PuntaBancaSaveModal({
                 Salva giocata Punta-Banca
               </DialogTitle>
               <p className="mt-1.5 text-sm text-muted-foreground">
-                Compila i dettagli dell&apos;evento e assegna gli intestatari per puntata e bancata.
+                Compila i dettagli dell&apos;evento e assegna i collaboratori per puntata e bancata.
               </p>
             </div>
 
@@ -552,12 +552,12 @@ export function PuntaBancaSaveModal({
 
               <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                 <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                  Intestatario Punta
+                  Collaboratore Punta
                 </Label>
                 {isMultiConto ? (
                   <div className="space-y-2">
                     <Label className="text-xs text-muted-foreground">
-                      Seleziona {numConti} conti (uno per intestatario, stessa quota/stake)
+                      Seleziona {numConti} conti (uno per collaboratore, stessa quota/stake)
                     </Label>
                     <SearchableMultiSelect
                       options={puntaAccountOptions}
@@ -588,12 +588,12 @@ export function PuntaBancaSaveModal({
                   <>
                     <div className="space-y-2">
                       <Label className="text-xs text-muted-foreground">
-                        Seleziona intestatario
+                        Seleziona collaboratore
                       </Label>
                       <SearchableSelect
                         id="holder-punta"
-                        placeholder="Seleziona intestatario"
-                        searchPlaceholder="Cerca intestatario..."
+                        placeholder="Seleziona collaboratore"
+                        searchPlaceholder="Cerca collaboratore..."
                         options={holders
                           .filter((h) => h.stato === 'abilitato')
                           .map((h) => ({ value: h.id, label: h.nome }))}
@@ -611,7 +611,7 @@ export function PuntaBancaSaveModal({
                       <SearchableSelect
                         id="account-punta"
                         placeholder={
-                          holderIdPunta ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                          holderIdPunta ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                         }
                         searchPlaceholder="Cerca conto..."
                         options={accountsPunta.map((acc) => {
@@ -632,7 +632,7 @@ export function PuntaBancaSaveModal({
                       />
                       {holderIdPunta && accountsPunta.length === 0 && (
                         <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                          Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                          Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                           Profit Tracker → Conti.
                         </p>
                       )}
@@ -643,14 +643,14 @@ export function PuntaBancaSaveModal({
 
               <div className="space-y-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
                 <Label className="text-xs font-medium uppercase tracking-wide text-destructive">
-                  Intestatario Banca
+                  Collaboratore Banca
                 </Label>
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                  <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                   <SearchableSelect
                     id="holder-banca"
-                    placeholder="Seleziona intestatario"
-                    searchPlaceholder="Cerca intestatario..."
+                    placeholder="Seleziona collaboratore"
+                    searchPlaceholder="Cerca collaboratore..."
                     options={holders
                       .filter(
                         (h) =>
@@ -672,7 +672,7 @@ export function PuntaBancaSaveModal({
                   <SearchableSelect
                     id="account-banca"
                     placeholder={
-                      holderIdBanca ? 'Seleziona conto exchange' : 'Seleziona prima un intestatario'
+                      holderIdBanca ? 'Seleziona conto exchange' : 'Seleziona prima un collaboratore'
                     }
                     searchPlaceholder="Cerca conto exchange..."
                     options={accountsBanca.map((acc) => {
@@ -693,7 +693,7 @@ export function PuntaBancaSaveModal({
                   />
                   {holderIdBanca && accountsBanca.length === 0 && (
                     <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                      Nessun conto exchange disponibile per questo intestatario. Aggiungine uno in
+                      Nessun conto exchange disponibile per questo collaboratore. Aggiungine uno in
                       Profit Tracker → Conti.
                     </p>
                   )}

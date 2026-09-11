@@ -1302,7 +1302,7 @@ export function TriPuntaCalculator() {
         </Button>
       </div>
 
-      {/* Modale: Assegna intestatari e dati evento */}
+      {/* Modale: Assegna collaboratori e dati evento */}
       <Dialog
         open={holderModalOpen}
         onOpenChange={(open) => {
@@ -1353,7 +1353,7 @@ export function TriPuntaCalculator() {
                   Salva giocata Tri-Punta
                 </DialogTitle>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                  Compila i dettagli dell&apos;evento e assegna gli intestatari per puntata 1,
+                  Compila i dettagli dell&apos;evento e assegna i collaboratori per puntata 1,
                   puntata 2 e puntata 3.
                 </p>
               </div>
@@ -1446,19 +1446,19 @@ export function TriPuntaCalculator() {
 
                 <BetCategorySelect value={categoria} onChange={setCategoria} />
 
-                {/* Intestatario Punta 1 */}
+                {/* Collaboratore Punta 1 */}
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                      Intestatario Punta 1
+                      Collaboratore Punta 1
                     </Label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                    <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                     <SearchableSelect
                       id="holder-punta-a"
-                      placeholder="Seleziona intestatario"
-                      searchPlaceholder="Cerca intestatario..."
+                      placeholder="Seleziona collaboratore"
+                      searchPlaceholder="Cerca collaboratore..."
                       options={holders
                         .filter((h) => h.stato === 'abilitato')
                         .map((h) => ({ value: h.id, label: h.nome }))}
@@ -1475,7 +1475,7 @@ export function TriPuntaCalculator() {
                     <SearchableSelect
                       id="account-punta-a"
                       placeholder={
-                        holderIdPuntaA ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                        holderIdPuntaA ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                       }
                       searchPlaceholder="Cerca conto..."
                       options={accountsPuntaA.map((acc) => {
@@ -1496,24 +1496,24 @@ export function TriPuntaCalculator() {
                     />
                     {holderIdPuntaA && accountsPuntaA.length === 0 && (
                       <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                        Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                        Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                         Profit Tracker &rarr; Conti.
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Intestatario Punta 2 */}
+                {/* Collaboratore Punta 2 */}
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                    Intestatario Punta 2
+                    Collaboratore Punta 2
                   </Label>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                    <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                     <SearchableSelect
                       id="holder-punta-b"
-                      placeholder="Seleziona intestatario"
-                      searchPlaceholder="Cerca intestatario..."
+                      placeholder="Seleziona collaboratore"
+                      searchPlaceholder="Cerca collaboratore..."
                       options={holders
                         .filter((h) => h.stato === 'abilitato')
                         .map((h) => ({ value: h.id, label: h.nome }))}
@@ -1532,7 +1532,7 @@ export function TriPuntaCalculator() {
                     <SearchableSelect
                       id="account-punta-b"
                       placeholder={
-                        holderIdPuntaB ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                        holderIdPuntaB ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                       }
                       searchPlaceholder="Cerca conto..."
                       options={accountsPuntaB.map((acc) => {
@@ -1553,24 +1553,24 @@ export function TriPuntaCalculator() {
                     />
                     {holderIdPuntaB && accountsPuntaB.length === 0 && (
                       <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                        Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                        Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                         Profit Tracker &rarr; Conti.
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Intestatario Punta 3 */}
+                {/* Collaboratore Punta 3 */}
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                    Intestatario Punta 3
+                    Collaboratore Punta 3
                   </Label>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                    <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                     <SearchableSelect
                       id="holder-punta-c"
-                      placeholder="Seleziona intestatario"
-                      searchPlaceholder="Cerca intestatario..."
+                      placeholder="Seleziona collaboratore"
+                      searchPlaceholder="Cerca collaboratore..."
                       options={holders
                         .filter((h) => h.stato === 'abilitato')
                         .map((h) => ({ value: h.id, label: h.nome }))}
@@ -1589,7 +1589,7 @@ export function TriPuntaCalculator() {
                     <SearchableSelect
                       id="account-punta-c"
                       placeholder={
-                        holderIdPuntaC ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                        holderIdPuntaC ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                       }
                       searchPlaceholder="Cerca conto..."
                       options={accountsPuntaC.map((acc) => {
@@ -1610,7 +1610,7 @@ export function TriPuntaCalculator() {
                     />
                     {holderIdPuntaC && accountsPuntaC.length === 0 && (
                       <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                        Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                        Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                         Profit Tracker &rarr; Conti.
                       </p>
                     )}

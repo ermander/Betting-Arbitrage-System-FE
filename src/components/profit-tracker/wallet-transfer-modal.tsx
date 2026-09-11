@@ -121,15 +121,15 @@ export function WalletTransferModal({ open, onOpenChange }: WalletTransferModalP
         </DialogHeader>
         <div className="space-y-4 p-4 pt-0 text-sm">
           <div className="space-y-1.5">
-            <Label htmlFor="from-holder">Da intestatario</Label>
+            <Label htmlFor="from-holder">Da collaboratore</Label>
             <SearchableSelect
               id="from-holder"
               options={holderOptions}
               value={effectiveFromHolderId}
               onChange={setFromHolderId}
               allowEmpty={false}
-              placeholder="Seleziona intestatario"
-              searchPlaceholder="Cerca intestatario..."
+              placeholder="Seleziona collaboratore"
+              searchPlaceholder="Cerca collaboratore..."
               portalContainer={dropdownPortalEl}
             />
           </div>
@@ -149,15 +149,15 @@ export function WalletTransferModal({ open, onOpenChange }: WalletTransferModalP
             </select>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="to-holder">A intestatario</Label>
+            <Label htmlFor="to-holder">A collaboratore</Label>
             <SearchableSelect
               id="to-holder"
               options={holderOptions}
               value={effectiveToHolderId}
               onChange={setToHolderId}
               allowEmpty={false}
-              placeholder="Seleziona intestatario"
-              searchPlaceholder="Cerca intestatario..."
+              placeholder="Seleziona collaboratore"
+              searchPlaceholder="Cerca collaboratore..."
               portalContainer={dropdownPortalEl}
             />
           </div>

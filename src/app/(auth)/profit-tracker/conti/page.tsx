@@ -138,9 +138,9 @@ export default function ContiPage() {
 
       <div className="flex flex-col items-stretch gap-4 rounded-xl border border-border bg-card/70 p-3 shadow-sm sm:flex-row sm:flex-wrap sm:items-end">
         <SearchableMultiSelect
-          label="Intestatario"
+          label="Collaboratore"
           placeholder="Tutti"
-          searchPlaceholder="Cerca intestatario..."
+          searchPlaceholder="Cerca collaboratore..."
           buttonLabel={holderIds.length > 0 ? `${holderIds.length} selezionati` : 'Tutti'}
           options={holders.map((h) => ({ id: h.id, name: h.nome }))}
           selectedIds={holderIds}
@@ -231,7 +231,7 @@ export default function ContiPage() {
                   </span>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <span className="text-muted-foreground">Intestatario</span>
+                  <span className="text-muted-foreground">Collaboratore</span>
                   <span className="text-right text-foreground">
                     {resolveHolderName(account.holderId)}
                   </span>
@@ -303,7 +303,7 @@ export default function ContiPage() {
           <thead>
             <tr className="border-b border-border/60 bg-muted/40 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               <th className="px-3 py-2 text-left">Creato il</th>
-              <th className="px-3 py-2 text-left">Intestatario</th>
+              <th className="px-3 py-2 text-left">Collaboratore</th>
               <th className="px-3 py-2 text-left">Book</th>
               <th className="px-3 py-2 text-left">Descrizione</th>
               <th className="px-3 py-2 text-left">

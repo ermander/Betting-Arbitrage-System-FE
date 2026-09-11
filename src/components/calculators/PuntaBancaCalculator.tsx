@@ -342,7 +342,7 @@ export function PuntaBancaCalculator() {
             onChange={(e) => setNumConti(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
-            Usalo per quote maggiorate giocate allo stesso book a nome di più intestatari: la
+            Usalo per quote maggiorate giocate allo stesso book a nome di più collaboratori: la
             puntata sopra è quella di un singolo conto, la copertura viene calcolata
             sull&apos;esposizione totale ({numContiNum > 1 ? `${numContiNum} conti` : '1 conto'}).
           </p>

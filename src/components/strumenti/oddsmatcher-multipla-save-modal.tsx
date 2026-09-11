@@ -323,10 +323,10 @@ export function OddsmatcherMultiplaSaveModal({
           <>
             <div className="px-6 pb-1 pt-6">
               <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
-                Assegna intestatari
+                Assegna collaboratori
               </DialogTitle>
               <p className="mt-1.5 text-sm text-muted-foreground">
-                Scegli l&apos;intestatario per la puntata (book) e per la bancata (exchange) della
+                Scegli il collaboratore per la puntata (book) e per la bancata (exchange) della
                 multipla.
               </p>
             </div>
@@ -335,7 +335,7 @@ export function OddsmatcherMultiplaSaveModal({
               <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                 <div className="flex items-center justify-between gap-2">
                   <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                    Intestatario Punta
+                    Collaboratore Punta
                   </Label>
                   <span className="rounded-md bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
                     {bookNamePunta || '—'}
@@ -348,8 +348,8 @@ export function OddsmatcherMultiplaSaveModal({
                   })}
                   value={accountIdPunta}
                   onChange={setAccountIdPunta}
-                  placeholder="Seleziona intestatario"
-                  searchPlaceholder="Cerca intestatario..."
+                  placeholder="Seleziona collaboratore"
+                  searchPlaceholder="Cerca collaboratore..."
                   allowEmpty={false}
                   portalContainer={holderPortalEl}
                 />
@@ -363,7 +363,7 @@ export function OddsmatcherMultiplaSaveModal({
               <div className="space-y-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
                 <div className="flex items-center justify-between gap-2">
                   <Label className="text-xs font-medium uppercase tracking-wide text-destructive">
-                    Intestatario Banca
+                    Collaboratore Banca
                   </Label>
                   <span className="rounded-md bg-destructive/15 px-2 py-0.5 text-xs font-medium text-destructive">
                     {bookNameBanca || '—'}
@@ -376,8 +376,8 @@ export function OddsmatcherMultiplaSaveModal({
                   })}
                   value={accountIdBanca}
                   onChange={setAccountIdBanca}
-                  placeholder="Seleziona intestatario"
-                  searchPlaceholder="Cerca intestatario..."
+                  placeholder="Seleziona collaboratore"
+                  searchPlaceholder="Cerca collaboratore..."
                   allowEmpty={false}
                   portalContainer={holderPortalEl}
                 />

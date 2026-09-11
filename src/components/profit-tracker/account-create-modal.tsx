@@ -72,11 +72,11 @@ function AccountCreateModalForm({
   return (
     <div className="space-y-4 p-4 pt-0 text-sm">
       <div className="space-y-1.5">
-        <Label htmlFor="acc-holder">Intestatario</Label>
+        <Label htmlFor="acc-holder">Collaboratore</Label>
         <SearchableSelect
           id="acc-holder"
-          placeholder="Seleziona intestatario"
-          searchPlaceholder="Cerca intestatario..."
+          placeholder="Seleziona collaboratore"
+          searchPlaceholder="Cerca collaboratore..."
           options={holders.map((h) => ({ value: h.id, label: h.nome }))}
           value={holderId}
           onChange={setHolderId}
@@ -101,7 +101,7 @@ function AccountCreateModalForm({
         />
         {books.length === 0 && (
           <p className="text-xs text-muted-foreground">
-            Nessun book disponibile per questo intestatario.
+            Nessun book disponibile per questo collaboratore.
           </p>
         )}
       </div>

@@ -330,22 +330,22 @@ export function MultiplaOfflineSaveModal({
                 Salva Multipla
               </DialogTitle>
               <p className="mt-1.5 text-sm text-muted-foreground">
-                Assegna gli intestatari per la puntata e per le coperture della multipla.
+                Assegna i collaboratori per la puntata e per le coperture della multipla.
               </p>
             </div>
 
             <div className="grid gap-4 px-6 py-5">
-              {/* Intestatario Punta */}
+              {/* Collaboratore Punta */}
               <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                 <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                  Intestatario Punta
+                  Collaboratore Punta
                 </Label>
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                  <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                   <SearchableSelect
                     id="holder-punta"
-                    placeholder="Seleziona intestatario"
-                    searchPlaceholder="Cerca intestatario..."
+                    placeholder="Seleziona collaboratore"
+                    searchPlaceholder="Cerca collaboratore..."
                     options={holders
                       .filter((h) => h.stato === 'abilitato')
                       .map((h) => ({ value: h.id, label: h.nome }))}
@@ -362,7 +362,7 @@ export function MultiplaOfflineSaveModal({
                   <SearchableSelect
                     id="account-punta"
                     placeholder={
-                      holderIdPunta ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                      holderIdPunta ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                     }
                     searchPlaceholder="Cerca conto..."
                     options={accountsPunta.map((acc) => {
@@ -383,24 +383,24 @@ export function MultiplaOfflineSaveModal({
                   />
                   {holderIdPunta && accountsPunta.length === 0 && (
                     <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                      Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                      Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                       Profit Tracker → Conti.
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* Intestatario Banca */}
+              {/* Collaboratore Banca */}
               <div className="space-y-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
                 <Label className="text-xs font-medium uppercase tracking-wide text-destructive">
-                  Intestatario Copertura
+                  Collaboratore Copertura
                 </Label>
                 <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                  <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                   <SearchableSelect
                     id="holder-banca"
-                    placeholder="Seleziona intestatario"
-                    searchPlaceholder="Cerca intestatario..."
+                    placeholder="Seleziona collaboratore"
+                    searchPlaceholder="Cerca collaboratore..."
                     options={holders
                       .filter(
                         (h) =>
@@ -423,7 +423,7 @@ export function MultiplaOfflineSaveModal({
                   <SearchableSelect
                     id="account-banca"
                     placeholder={
-                      holderIdBanca ? 'Seleziona conto exchange' : 'Seleziona prima un intestatario'
+                      holderIdBanca ? 'Seleziona conto exchange' : 'Seleziona prima un collaboratore'
                     }
                     searchPlaceholder="Cerca conto exchange..."
                     options={accountsBanca.map((acc) => {
@@ -444,7 +444,7 @@ export function MultiplaOfflineSaveModal({
                   />
                   {holderIdBanca && accountsBanca.length === 0 && (
                     <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                      Nessun conto exchange disponibile per questo intestatario. Aggiungine uno in
+                      Nessun conto exchange disponibile per questo collaboratore. Aggiungine uno in
                       Profit Tracker → Conti.
                     </p>
                   )}

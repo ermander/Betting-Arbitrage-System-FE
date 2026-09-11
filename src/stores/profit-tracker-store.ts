@@ -288,7 +288,7 @@ export const useProfitTrackerStore = create<ProfitTrackerState>((set, _get) => {
       } catch (error: unknown) {
         set(() => ({
           isLoadingHolders: false,
-          holdersError: getErrorMessage(error) || 'Errore nel caricamento degli intestatari',
+          holdersError: getErrorMessage(error) || 'Errore nel caricamento dei collaboratori',
         }))
       }
     },
@@ -318,12 +318,12 @@ export const useProfitTrackerStore = create<ProfitTrackerState>((set, _get) => {
       } catch (error: unknown) {
         if (getErrorCode(error) === 'HOLDER_NAME_ALREADY_EXISTS') {
           set(() => ({
-            holdersError: 'Esiste già un intestatario con questo nome',
+            holdersError: 'Esiste già un collaboratore con questo nome',
           }))
           return
         }
         set(() => ({
-          holdersError: getErrorMessage(error) || 'Errore nel salvataggio dell’intestatario',
+          holdersError: getErrorMessage(error) || 'Errore nel salvataggio del collaboratore',
         }))
       }
     },

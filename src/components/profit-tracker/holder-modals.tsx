@@ -46,7 +46,7 @@ export function HolderCreateModal({ open, onOpenChange }: HolderCreateModalProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Nuovo intestatario</DialogTitle>
+          <DialogTitle>Nuovo collaboratore</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 p-4 pt-0 text-sm">
           <div className="space-y-1.5">
@@ -120,7 +120,7 @@ export function HolderEditModal({ open, onOpenChange, holder }: HolderEditModalP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Modifica intestatario</DialogTitle>
+          <DialogTitle>Modifica collaboratore</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 p-4 pt-0 text-sm">
           <div className="space-y-1.5">
@@ -132,7 +132,7 @@ export function HolderEditModal({ open, onOpenChange, holder }: HolderEditModalP
               className="cursor-default select-none bg-muted/60"
             />
             <p className="text-[11px] text-muted-foreground">
-              Il nome dell&apos;intestatario non può essere modificato dopo la creazione.
+              Il nome del collaboratore non può essere modificato dopo la creazione.
             </p>
           </div>
           <div className="space-y-1.5">

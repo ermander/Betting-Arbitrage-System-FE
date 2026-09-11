@@ -117,15 +117,15 @@ export function WalletTopupExpenseModal({ open, onOpenChange }: WalletTopupExpen
         </DialogHeader>
         <div className="space-y-4 p-4 pt-0 text-sm">
           <div className="space-y-1.5">
-            <Label htmlFor="topup-holder">Intestatario</Label>
+            <Label htmlFor="topup-holder">Collaboratore</Label>
             <SearchableSelect
               id="topup-holder"
               options={holderOptions}
               value={effectiveHolderId}
               onChange={setHolderId}
               allowEmpty={false}
-              placeholder="Seleziona intestatario"
-              searchPlaceholder="Cerca intestatario..."
+              placeholder="Seleziona collaboratore"
+              searchPlaceholder="Cerca collaboratore..."
               portalContainer={dropdownPortalEl}
             />
           </div>

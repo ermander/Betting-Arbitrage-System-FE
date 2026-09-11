@@ -75,7 +75,7 @@ function WalletCreateModalForm({
     } catch (err: unknown) {
       const status = getResponseStatus(err)
       if (status === 409) {
-        toast.error("Esiste già un wallet con questo nome per l'intestatario selezionato")
+        toast.error("Esiste già un wallet con questo nome per il collaboratore selezionato")
       } else {
         toast.error('Errore durante il salvataggio')
       }
@@ -89,15 +89,15 @@ function WalletCreateModalForm({
   return (
     <div className="space-y-4 p-4 pt-0 text-sm">
       <div className="space-y-1.5">
-        <Label htmlFor="wallet-holder">Intestatario</Label>
+        <Label htmlFor="wallet-holder">Collaboratore</Label>
         <SearchableSelect
           id="wallet-holder"
           options={holderOptions}
           value={holderId}
           onChange={setHolderId}
           allowEmpty={false}
-          placeholder="Seleziona intestatario"
-          searchPlaceholder="Cerca intestatario..."
+          placeholder="Seleziona collaboratore"
+          searchPlaceholder="Cerca collaboratore..."
           portalContainer={portalContainer}
         />
       </div>

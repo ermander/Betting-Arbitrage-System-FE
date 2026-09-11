@@ -885,7 +885,7 @@ export function PuntaPuntaCalculator() {
         </Button>
       </div>
 
-      {/* Modale: Assegna intestatari e dati evento */}
+      {/* Modale: Assegna collaboratori e dati evento */}
       <Dialog
         open={holderModalOpen}
         onOpenChange={(open) => {
@@ -943,7 +943,7 @@ export function PuntaPuntaCalculator() {
                   Salva giocata Punta-Punta
                 </DialogTitle>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                  Compila i dettagli dell&apos;evento e assegna gli intestatari per puntata 1 e
+                  Compila i dettagli dell&apos;evento e assegna i collaboratori per puntata 1 e
                   puntata 2.
                 </p>
               </div>
@@ -1018,15 +1018,15 @@ export function PuntaPuntaCalculator() {
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                      Intestatario Punta 1
+                      Collaboratore Punta 1
                     </Label>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                    <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                     <SearchableSelect
                       id="holder-punta-a"
-                      placeholder="Seleziona intestatario"
-                      searchPlaceholder="Cerca intestatario..."
+                      placeholder="Seleziona collaboratore"
+                      searchPlaceholder="Cerca collaboratore..."
                       options={holders
                         .filter((h) => h.stato === 'abilitato')
                         .map((h) => ({ value: h.id, label: h.nome }))}
@@ -1043,7 +1043,7 @@ export function PuntaPuntaCalculator() {
                     <SearchableSelect
                       id="account-punta-a"
                       placeholder={
-                        holderIdPuntaA ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                        holderIdPuntaA ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                       }
                       searchPlaceholder="Cerca conto..."
                       options={accountsPuntaA.map((acc) => {
@@ -1064,7 +1064,7 @@ export function PuntaPuntaCalculator() {
                     />
                     {holderIdPuntaA && accountsPuntaA.length === 0 && (
                       <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                        Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                        Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                         Profit Tracker → Conti.
                       </p>
                     )}
@@ -1073,14 +1073,14 @@ export function PuntaPuntaCalculator() {
 
                 <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <Label className="text-xs font-medium uppercase tracking-wide text-primary">
-                    Intestatario Punta 2
+                    Collaboratore Punta 2
                   </Label>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">Seleziona intestatario</Label>
+                    <Label className="text-xs text-muted-foreground">Seleziona collaboratore</Label>
                     <SearchableSelect
                       id="holder-punta-b"
-                      placeholder="Seleziona intestatario"
-                      searchPlaceholder="Cerca intestatario..."
+                      placeholder="Seleziona collaboratore"
+                      searchPlaceholder="Cerca collaboratore..."
                       options={holders
                         .filter((h) => h.stato === 'abilitato')
                         .map((h) => ({ value: h.id, label: h.nome }))}
@@ -1099,7 +1099,7 @@ export function PuntaPuntaCalculator() {
                     <SearchableSelect
                       id="account-punta-b"
                       placeholder={
-                        holderIdPuntaB ? 'Seleziona conto' : 'Seleziona prima un intestatario'
+                        holderIdPuntaB ? 'Seleziona conto' : 'Seleziona prima un collaboratore'
                       }
                       searchPlaceholder="Cerca conto..."
                       options={accountsPuntaB.map((acc) => {
@@ -1120,7 +1120,7 @@ export function PuntaPuntaCalculator() {
                     />
                     {holderIdPuntaB && accountsPuntaB.length === 0 && (
                       <p className="rounded-md bg-amber-500/10 px-3 py-2 text-xs text-amber-600">
-                        Nessun conto punta disponibile per questo intestatario. Aggiungine uno in
+                        Nessun conto punta disponibile per questo collaboratore. Aggiungine uno in
                         Profit Tracker → Conti.
                       </p>
                     )}
